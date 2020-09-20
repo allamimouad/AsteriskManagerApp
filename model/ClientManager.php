@@ -1,6 +1,7 @@
 <?php
 
 require("model/Manager.php");
+require("model/Client.php");
 /**
  * this class will manage client (add/remove/modify..etc)
  */
@@ -16,7 +17,7 @@ class ClientManager extends Manager
 
 		$bdd = $this->db_connect();
 
-		$clients = $bdd->prepare('SELECT au.id,
+		$clients_table = $bdd->prepare('SELECT au.id,
 										 au.password,
 										 au.username,
 										 pnt.context,
@@ -24,7 +25,17 @@ class ClientManager extends Manager
 								  FROM ps_auths au
 								  INNER JOIN ps_endpoints pnt ON au.id = pnt.auth
 								  ');
-		$clients->execute(array());
+		$clients_table->execute(array());
+
+		$clients = array();
+
+		while ($clients_array = $clients_table->fetch())
+    	{
+    		$clients[] = new Client($clients_array);
+    	}
+
+
+		$clients_table->closeCursor();
 
 		return $clients;
 

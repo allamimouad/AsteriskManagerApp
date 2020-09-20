@@ -9,12 +9,12 @@
 class Extension
 {
 
-	private $_id;
+	private $_client;
 	private $_extension;
 
-	public function getId(){
+	public function getClient(){
 
-		return $this->_id;
+		return $this->_client;
 	}
 
 	public function getExtension(){

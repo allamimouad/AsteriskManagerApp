@@ -19,7 +19,7 @@
 
 		<div class="row align-middle">
 
-			<div class="col-lg-6 offset-lg-3 pt-5 bg-secondary">
+			<div class="col-lg-6 offset-lg-3 pt-5">
 				
 				<form method="POST"	action="/" >
 

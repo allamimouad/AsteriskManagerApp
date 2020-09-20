@@ -46,11 +46,14 @@
 						</button>
 						<div id="navbarContent" class="collapse navbar-collapse">
 							<ul class="navbar-nav">
-								<li class="nav-item active">
+								<li class="nav-item <?= $navbar_active == "list clients" ? "active" : '' ?> ">
 									<a class="nav-link" href="/?action=clients_list">list clients</a>
 								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="/?action=add_client">ajouter client</a>
+								<li class="nav-item <?= $navbar_active == "add client" ? "active" : '' ?> ">
+									<a class="nav-link" href="/?action=add_client">add client</a>
+								</li>
+								<li class="nav-item <?= $navbar_active == "create context" ? "active" : '' ?> ">
+									<a class="nav-link" href="/?action=add_context">create context</a>
 								</li>
 							</ul>
 						</div>

@@ -7,6 +7,9 @@
 	 */
 	class ContextManager
 	{
+
+
+		static $_path_to_file = "asterisk/extentions.conf";
 		
 		function __construct()
 		{
@@ -41,23 +44,30 @@
 		// check a context if exist or not
 		function context_exist($path_to_file  , $context_name){
 
-			$contexts = get_all_contexts($path_to_file);
+			$contexts = $this->get_all_contexts($path_to_file);
 
 			return in_array ( $context_name , $contexts );
 		}
 
 		// create a new context
-		function create_context($path_to_file , $context_name)
+		function create_context( $path_to_file , $context_name)
 		{	
 
-			if (preg_match("#^[0-9A-Za-z_-]+$#", $context_name )) {
-				
-				$file = fopen($path_to_file, 'a+');
+			$context_added = false;
 
-				fputs($monfichier, '\n'.$context_name.'\n');
+			if (preg_match("#^[0-9A-Za-z_-]+$#", $context_name )) {
+
+				if ( !$this->context_exist( $path_to_file , $context_name)) {
+									
+					$file = fopen($path_to_file, 'a+');
+
+					$context_added = fputs($file, "\r\n\r\n\r\n[".$context_name."]\r\n");
+				}
 
 
 			}
+
+			return $context_added;
 
 		}
 

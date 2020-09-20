@@ -12,6 +12,7 @@
 		private $_password;
 		private $_context;
 		private $_transport;
+		private $_extension;
 
 
 
@@ -36,6 +37,12 @@
 		public function setTransport($transport){
 
 			$this->_transport = $transport ;
+		}
+
+
+		public function setExtension($extension){
+
+			$this->_extension = $extension ;
 		}
 
 
@@ -64,12 +71,33 @@
 		}
 
 
+		public function getExtension(){
+
+			return $this->_extension ;
+		}
+
+
+		public function hydrate(array $donnees){
+
+			foreach ($donnees as $key => $value)
+			{
+				// On récupère le nom du setter correspondant à l'attribut.
+				$method = 'set'.ucfirst($key);
+	        
+	    		// Si le setter correspondant existe.
+				if (method_exists($this, $method))
+				{
+					// On appelle le setter.
+					$this->$method($value);
+				}
+			}
+		}
 		
 		
 
-		function __construct(argument)
+		function __construct(array $client_array)
 		{
-					
+			$this->hydrate($client_array);
 		}
 
 

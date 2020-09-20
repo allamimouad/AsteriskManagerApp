@@ -5,24 +5,25 @@
 
 <?php ob_start(); ?>
 
-<?php
-    while ($client = $clients->fetch())
-    {
+<?php 
+
+    
+    foreach ($clients as $client ) {
 ?>
         <div class="row">
-
             
-            <div class="col-md-2 offset-2"> <?= $client["password"] ?> </div>
-            <div class="col-md-2"> <?= $client["username"] ?> </div>
-            <div class="col-md-2"> <?= $client["context"] ?> </div>
-            <div class="col-md-2"> <?= $client["transport"] ?> </div>
-
+            <div class="col-md-2"> <?= $client->getUsername() ?> </div>
+            <div class="col-md-2 offset-2"> <?= $client->getPassword() ?> </div>
+            <div class="col-md-2"> <?= $client->getContext() ?> </div>
+            <div class="col-md-2"> <?= $client->getTransport() ?> </div>
+            <div class="col-md-2"> <?= $client->getTransport() ?> </div>
+            
         </div>
 <?php
 
     }
 
-$clients->closeCursor();
+
 $container = ob_get_clean();
 
 ?>
