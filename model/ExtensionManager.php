@@ -12,7 +12,7 @@
 			
 		}
 
-		function get_extensions($context,)
+		function get_extensions($context)
 		{
 
 		}
