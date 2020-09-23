@@ -1,7 +1,6 @@
 <?php
 
-require("model/Manager.php");
-//require("model/Client.php");
+////require("model/Client.php");
 //require("model/ContextManager.php");
 /**
  * this class will manage client (add/remove/modify..etc)

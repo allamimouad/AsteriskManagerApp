@@ -45,11 +45,11 @@ private $_username;
 	print_r($client);*/
 
 
-$contextmanager = new ContextManager();
+/*$contextmanager = new ContextManager();
 
 $extensions = $contextmanager->get_context("asterisk/extentions.conf","sets");
 
-print_r($extensions);
+print_r($extensions);*/
 
 /*$reg_s[] = "#hello#";
 $reg_s[] = "#123#";*/
@@ -86,11 +86,17 @@ echo $stt2;*/
 
 
 
+$extensionmanager = new ExtensionManager();
 
+$clientmanager = new ClientManager();
 
+$client = $clientmanager->get_client('mouad123');
 
+$extension = new Extension( array( 'extension' => 160 , 'client' => $client ));
 
+$added = $extensionmanager->create_extension( 'sets2' , $extension );
 
+echo $added ? "added" : "not added" ;;
 
 
 
