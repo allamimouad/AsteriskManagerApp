@@ -1,16 +1,16 @@
 <?php
 
 	
-	require("model/ClientManager.php");
-	require("model/ContextManager.php");
+	//require("model/ClientManager.php");
+	//require("model/ContextManager.php");
 
-	function clients_list_conroller(){
+	function contexts_list_conroller(){
 
-		$cm = new ClientManager();
+		$contextmanager = new ContextManager();
 
-		$clients = $cm->show_client();
+		$contexts = $contextmanager->get_all_contexts("asterisk/extentions.conf");
 
-		$navbar_active = "list clients";
+		$navbar_active = "list contexts";
 
 		require("vue/clients_list.php");
 	}
@@ -19,7 +19,7 @@
 		
 		$contextmanager = new ContextManager();
 
-		$contexts = $contextmanager->get_all_contexts("asterisk/extentions.conf");
+		$contexts = $contextmanager->get_all_contexts_names("asterisk/extentions.conf");
 
 		$navbar_active = "add client";
 		
@@ -28,9 +28,9 @@
 
 	function post_add_client_conroller( $_username , $_password , $_context , $_transport ){
 		
-		$cm = new ClientManager();
+		$clientmanager = new ClientManager();
 
-		$client_added = $cm->add_client( $_username , $_password , $_context , $_transport );
+		$client_added = $clientmanager->add_client( $_username , $_password , $_context , $_transport );
 
 		$navbar_active = "add client";
 		
@@ -46,9 +46,9 @@
 
 	function post_create_context_conroller( $context_name ){
 		
-		$cm = new ContextManager();
+		$contextmanager = new ContextManager();
 
-		$context_added = $cm->create_context( ContextManager::$_path_to_file , $context_name);
+		$context_added = $contextmanager->create_context( ContextManager::$_path_to_file , $context_name);
 		
 		$navbar_active = "create context";
 

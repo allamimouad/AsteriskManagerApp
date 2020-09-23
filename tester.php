@@ -1,8 +1,17 @@
 <?php
 
 
-	require("model/ContextManager.php");
+	//require("model/ContextManager.php");
 	//echo $_SERVER['DOCUMENT_ROOT'];
+
+    require("controller/controller.php");
+
+    function chargerClasse($classe)
+    {
+      require "model/" . $classe . '.php'; // On inclut la classe correspondante au paramètre passé.
+    }
+
+    spl_autoload_register('chargerClasse');
 
 	
 
@@ -38,7 +47,7 @@ private $_username;
 
 $contextmanager = new ContextManager();
 
-$extensions = $contextmanager->get_extensions("asterisk/extentions.conf","sets");
+$extensions = $contextmanager->get_context("asterisk/extentions.conf","sets");
 
 print_r($extensions);
 
@@ -48,7 +57,7 @@ $reg_s[] = "#123#";*/
 
 
 
-/*$reg_exps_array[] = "# ?(, ?[0-9])?\)#";
+/*$reg_exps_array[] = "# ?(, ?[0-9]*)? ?\)#";
 $reg_exps_array[] = "#exten ?=> ?[0-9a-zA-Z]+ ?, ?([1-9]+|n) ?, ?Dial\( ?#";
 
 $replacement = "";
@@ -59,11 +68,16 @@ $extension = preg_replace ( $reg_exps_array , " " , $ligne );
 
 echo $ligne."<br>";
 
+echo $extension."<br><br>";
+
+$reg_exps_array2[] = "#exten ?=> ?#";
+$reg_exps_array2[] = "# ?,.*#";
+
+$extension = preg_replace ( $reg_exps_array2 , " " , $ligne );
+
+echo $ligne."<br>";
+
 echo $extension;*/
-
-
-
-
 
 /*$stt = "hellobbhelloohhhh123pp";
 $stt2 = preg_replace ( $reg_s , "" , $stt );

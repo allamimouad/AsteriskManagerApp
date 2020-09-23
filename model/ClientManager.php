@@ -1,7 +1,8 @@
 <?php
 
 require("model/Manager.php");
-require("model/Client.php");
+//require("model/Client.php");
+//require("model/ContextManager.php");
 /**
  * this class will manage client (add/remove/modify..etc)
  */
@@ -13,7 +14,7 @@ class ClientManager extends Manager
 		# code...
 	}
 
-	function show_client(){
+	function get_all_client(){
 
 		$bdd = $this->db_connect();
 
@@ -31,13 +32,129 @@ class ClientManager extends Manager
 
 		while ($clients_array = $clients_table->fetch())
     	{
-    		$clients[] = new Client($clients_array);
-    	}
+    		$client = new Client($clients_array);
 
+    		//$client->setExtension($extension);
+
+    		$clients[] = $client;
+    	}
 
 		$clients_table->closeCursor();
 
 		return $clients;
+
+	}
+
+	function get_all_client_of_context( $context ){
+
+		$bdd = $this->db_connect();
+
+		$clients_table = $bdd->prepare('SELECT au.id,
+										 au.password,
+										 au.username,
+										 pnt.context,
+										 pnt.transport
+								  FROM ps_auths au
+								  INNER JOIN ps_endpoints pnt ON au.id = pnt.auth
+								  WHERE pnt.context = ?
+								  ');
+		$clients_table->execute(array( $context ));
+
+		$clients = array();
+
+		while ($clients_array = $clients_table->fetch())
+    	{
+    		$client = new Client($clients_array);
+
+    		//$client->setExtension($extension);
+
+    		$clients[] = $client;
+    	}
+
+		$clients_table->closeCursor();
+
+		return $clients;
+
+	}
+
+	function get_all_client_except( array $except_clients , $context){
+
+		if (empty($except_clients)) {
+			return $this->get_all_client_of_context( $context );
+		}
+
+		$bdd = $this->db_connect();
+		
+		$statment = 'SELECT au.id,
+							au.password,
+							au.username,
+							pnt.context,
+							pnt.transport
+					FROM ps_auths au
+					INNER JOIN ps_endpoints pnt ON au.id = pnt.auth
+					WHERE pnt.context = ? AND au.id != ?
+					';
+
+		$arrayLength = count($except_clients);
+
+		$i = 1; 
+
+		while ($i < $arrayLength)
+        {
+            $statment = $statment.' AND au.id != ?';
+            $i++;
+        }
+
+		$clients_table = $bdd->prepare( $statment );
+
+		$parameters = array_merge( array( $context ) , $except_clients);
+
+		$clients_table->execute($parameters);
+
+		$clients = array();
+
+		while ($clients_array = $clients_table->fetch())
+    	{
+    		$client = new Client($clients_array);
+
+    		//$client->setExtension($extension);
+
+    		$clients[] = $client;
+    	}
+
+		$clients_table->closeCursor();
+
+		return $clients;
+
+	}
+
+	function get_client($client_id){
+
+		$bdd = $this->db_connect();
+
+		$clients_table = $bdd->prepare('SELECT au.id,
+											   au.password,
+											   au.username,
+											   pnt.context,
+											   pnt.transport
+										FROM ps_auths au
+								  		INNER JOIN ps_endpoints pnt ON au.id = pnt.auth
+								  		WHERE au.username = ?
+								  	');
+
+		//echo $client_id."sss";
+
+		$clients_table->execute(array($client_id));
+
+		$client_array = $clients_table->fetch();
+
+		//print_r($client_array);
+
+		$client = new Client($client_array);
+
+		$clients_table->closeCursor();
+
+		return $client;
 
 	}
 

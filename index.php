@@ -2,6 +2,13 @@
 
     require("controller/controller.php");
 
+    function chargerClasse($classe)
+    {
+      require "model/" . $classe . '.php'; // On inclut la classe correspondante au paramètre passé.
+    }
+
+    spl_autoload_register('chargerClasse');
+
 
     if ($_SERVER['REQUEST_METHOD'] === 'GET') { // The request is using the POST method
 
@@ -9,7 +16,7 @@
         
             if ($_GET["action"] == "clients_list") {
             
-                clients_list_conroller();
+                contexts_list_conroller();
 
             } 
             elseif ($_GET["action"] == "add_client") {

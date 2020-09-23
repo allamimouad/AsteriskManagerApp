@@ -2,6 +2,13 @@
 
 <?php  
 
+
+//require("model/Context.php");
+//require("model/Extension.php");
+
+
+
+
 	/**
 	 * 
 	 */
@@ -17,9 +24,9 @@
 		}
 
 		// will return an array contain all contexts
-		function get_all_contexts($path_to_file)
+		function get_all_contexts_names($path_to_file)
 		{
-			$contexts = array();
+			$contexts_names = array();
 
 			$file = fopen($path_to_file, 'r');
 
@@ -32,12 +39,26 @@
 					$context_name = substr($ligne_tmp,1, strlen( $ligne_tmp )-2);
 
 					if ($context_name != "general" && $context_name != "globals")
-						$contexts[] = $context_name;
+						$contexts_names[] = $context_name;
 
 				}
 			}
 
 			fclose($file);
+
+			return $contexts_names;
+
+		}
+
+		function get_all_contexts($path_to_file)
+		{
+			$contexts_names = $this->get_all_contexts_names($path_to_file);
+
+			foreach ($contexts_names as $context_name) {
+				
+				$contexts[] = $this->get_context( $path_to_file , $context_name );
+
+			}
 
 			return $contexts;
 
@@ -46,7 +67,7 @@
 		// check a context if exist or not
 		function context_exist($path_to_file  , $context_name ){
 
-			$contexts = $this->get_all_contexts($path_to_file);
+			$contexts = $this->get_all_contexts_names($path_to_file);
 
 			return in_array ( $context_name , $contexts );
 		}
@@ -68,16 +89,21 @@
 					fclose($file);
 				}
 
-
 			}
 
 			return $context_added;
 
 		}
 
-		function get_extensions( $path_to_file , $context_name ){ 
+		function get_context( $path_to_file , $context_name ){ 
 
 			$extensions = array();
+
+			$clients = array();
+
+			$except_clients = array();
+
+			$clientmanager = new ClientManager();
 
 			if (preg_match("#^[0-9A-Za-z_-]+$#", $context_name )) {
 
@@ -95,19 +121,37 @@
 							
 							$curent_context = true;
 
+
+
 							while ( ($ligne = fgets($file)) && $curent_context ) {
 								
 								if (preg_match("#^exten ?=> ?[0-9a-zA-Z]+ ?, ?([1-9]+|n) ?, ?Dial\( ?#", $ligne )) {
 
-									$reg_exps_array = array();
-									$reg_exps_array[] = "# ?(, ?[0-9])?\)#";
+									$reg_exps_array[] = "# ?(, ?[0-9]*)? ?\)#";
 									$reg_exps_array[] = "#exten ?=> ?[0-9a-zA-Z]+ ?, ?([1-9]+|n) ?, ?Dial\( ?#";
+									$reg_exps_array[] = "#^[0-9a-zA-Z]+/#";
 
 									$replacement = "";
 
-									$extension = preg_replace ( $reg_exps_array , "" , $ligne );
+									$client_name = trim ( preg_replace( $reg_exps_array , $replacement , $ligne ));
+
+									$client = $clientmanager->get_client($client_name);
+
+									$reg_exps_array2[] = "#exten ?=> ?#";
+									$reg_exps_array2[] = "# ?,.*#";
+
+									$extension_name = preg_replace ( $reg_exps_array2 , $replacement , $ligne );
+
+									$extension = new Extension( array( 'client' => $client , 'extension' => $extension_name ) );
+
+									$client->setExtension($extension);
 
 									$extensions[] = $extension;
+
+									$clients[] = $client;
+
+									$except_clients[] = $client_name; // clients that have extensions
+
 
 								}
 								elseif (preg_match("#^\[[0-9A-Za-z_-]+\]#", $ligne))  // new context accured
@@ -120,16 +164,25 @@
 						}
 					}
 
+					fclose($file);
+
+					$other_clients = $clientmanager->get_all_client_except( $except_clients , $context_name );
+
+					$clients = array_merge($clients, $other_clients);
+
+
+					$context = new Context( array( 'context' => $context_name , 'extensions' => $extensions , 'clients' => $clients ) );
+
 				}
 
 
 			}
 
-			return $extensions;
+			//return $extensions;
+
+			return $context;
 
 		}
-
-
 
 
 	}

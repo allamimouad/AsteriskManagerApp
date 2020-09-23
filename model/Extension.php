@@ -19,22 +19,34 @@ class Extension
 
 	public function getExtension(){
 
-		return $this->_id;
+		return $this->_extension;
 	}
 
-	public function setId($clientid){
+	public function setClient($client){
 
-		$this->_id = $clientid;
+		$this->_client = $client;
 	}
-	public function setExtesion($extension){
+	public function setExtension($extension){
 		
 		$this->_extension = $extension;
 	}
 	
-	function __construct($clientid,$extension)
+	function __construct(array $extension_array)
 	{
-		$this->setId($clientid);
-		$this->setExtesion($extension);
+		$this->hydrate($extension_array);
+	}
+
+	function hydrate(array $data){
+
+		foreach ($data as $key => $value) {
+			$methode = "set".ucfirst($key);
+
+			if (method_exists($this, $methode)) {
+				
+				$this->$methode($value);
+
+			}
+		}
 	}
 	
 
