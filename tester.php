@@ -86,7 +86,7 @@ echo $stt2;*/
 
 
 
-$extensionmanager = new ExtensionManager();
+/*$extensionmanager = new ExtensionManager();
 
 $clientmanager = new ClientManager();
 
@@ -96,21 +96,38 @@ $extension = new Extension( array( 'extension' => 160 , 'client' => $client ));
 
 $added = $extensionmanager->create_extension( 'sets2' , $extension );
 
-echo $added ? "added" : "not added" ;;
+echo $added ? "added" : "not added" ;*/
+
+//asterisk -rx 'core show channels'
+//sudo usermod -a -G asterisk apache
+
+
+//echo shell_exec ( "ls -l /etc/asterisk" );
+
+/*echo shell_exec ( "asterisk -rx 'pjsip show endpoints'" )."<br>";
+
+echo shell_exec ( "whoami" );*/
 
 
 
 
+$extensionmanager = new ExtensionManager();
+
+$extensionmanager->delete_extensions( 'GI2' , '160' );
+$extensionmanager->delete_extensions( 'sets' , '100' );
+
+$extension = new Extension(array('extension' => '100'));
+$extension2 = new Extension(array('extension' => '160'));
+
+echo $extensionmanager->extension_exist( 'sets' , $extension ) ? 'true' : 'false';
+echo $extensionmanager->extension_exist( 'GI2' , $extension2 ) ? 'true' : 'false';
 
 
+/*$contextmanager = new ContextManager();
 
+$extensions = $contextmanager->get_context("asterisk/extentions.conf","GI2");
 
-
-
-
-
-
-
+print_r($extensions);*/
 
 
 

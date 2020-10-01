@@ -55,6 +55,22 @@
 		require("vue/add_context_form.php");
 	}
 
+	function post_modify_client_conroller( $_id , $_username , $_password , $_transport ){
+		
+		$clientmanager = new ClientManager();
+
+		$client_added = $clientmanager->modify_client( $_id , $_username , $_password , $_transport );
+		
+		header("Location: /?action=clients_list");
+		die();
+	}
+
+	function post_delet_client(){
+
+		
+
+	}
+
 
 
 

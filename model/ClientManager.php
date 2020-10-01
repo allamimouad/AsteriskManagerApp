@@ -186,4 +186,120 @@ class ClientManager extends Manager
 	}
 
 
+	function client_have_extension($client_id)
+	{
+
+		$client = $this->get_client(trim($client_id));
+
+		$contexmanager = new ContextManager();
+
+
+		$context = $contexmanager->get_context(FileManager::get_path_plus_file_name() , $client->getContext());
+
+		foreach ($context->getClients() as $client ) {
+			
+			if ( trim($client->getUsername()) == trim($client_id)) {
+				
+				return $client->getExtension() == null ? false : true;
+
+			}
+
+		}
+	}
+
+
+
+	function modify_client( $_id , $_username , $_password , $_transport ){
+
+		$bdd = $this->db_connect();
+
+		$tmp_username = trim($_username);
+		$tmp_password = trim($_password);
+		$tmp_transport = trim($_transport);
+		$tmp_id = trim($_id);
+
+
+		// we should remove the extension because maybe we change the name of the client
+		// another thing , we should reemove it before changing the name cause if we changed the name we get an extension
+		// of a deleted client 
+		if ($this->client_have_extension($tmp_id)) {
+
+			$contexmanager = new ContextManager();
+
+			$client = $this->get_client($tmp_id);
+
+			$context_name = trim($client->getContext());
+
+
+			$context = $contexmanager->get_context(FileManager::get_path_plus_file_name() , $context_name);
+
+			foreach ($context->getClients() as $client ) {
+				
+				if ( trim($client->getUsername()) == trim($tmp_id)) {
+					
+					$extension = trim($client->getExtension()->getExtension()) ;
+					break;
+
+				}
+
+			}
+
+			$extensionmanager = new ExtensionManager();
+
+			$extensionmanager->delete_extensions( trim($context_name) , trim($extension) );
+			//exit("context_name".$context_name."extension".$extension);
+
+
+		}
+
+		$req = $bdd->prepare("UPDATE ps_endpoints 
+							  SET 
+							  	  id = :username,
+    							  transport = :transport,
+    							  aors = :username,
+    							  auth = :username
+							  WHERE
+    							  id = :id");
+
+		$req->execute(array(
+								'username' => $tmp_username, 
+								'transport' => $tmp_transport,
+								'id' => $tmp_id
+							));
+
+
+		
+		$req = $bdd->prepare("UPDATE ps_aors 
+							  SET 
+					    		  id = :username
+							  WHERE
+					    		  id = :id");
+
+		$req->execute(array(
+								'username' => $tmp_username,
+								'id' => $tmp_id
+							));
+
+
+
+		$req = $bdd->prepare("UPDATE ps_auths 
+							  SET 
+					    	  	  id = :username,
+					    	  	  username = :username,
+					    	  	  password = :password
+							  WHERE
+					    		  id = :id");
+
+		$req->execute(array(
+							'username' => $tmp_username,
+							'password' => $tmp_password,
+							'id' => $tmp_id
+							));
+
+		
+
+	}
+
+
+
 }

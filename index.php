@@ -44,6 +44,11 @@
             post_add_client_conroller( $_POST["v_username"] , $_POST["v_password"] , $_POST["v_context"] , $_POST["v_Type_de_Protocole"] );
         
         }
+        elseif ( isset($_POST["v_id"]) && isset($_POST["v_username"]) && isset($_POST["v_password"]) && isset($_POST["v_Type_de_Protocole"]) ) {
+        
+            post_modify_client_conroller( $_POST["v_id"] , $_POST["v_username"] , $_POST["v_password"] , $_POST["v_Type_de_Protocole"] );
+        
+        }
         elseif ( isset($_POST["v_context"]) ) {
         
             post_create_context_conroller( $_POST["v_context"] );

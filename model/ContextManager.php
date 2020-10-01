@@ -105,13 +105,13 @@
 
 			$clientmanager = new ClientManager();
 
-			if (preg_match("#^[0-9A-Za-z_-]+$#", $context_name )) {
+			if (preg_match("#^[0-9A-Za-z_-]+$#", $context_name )) { // verify that the variable $context_name is form of [contect]
 
 				if ( $this->context_exist( $path_to_file , $context_name)) { // the context should exist 
 									
 					$file = fopen($path_to_file, 'r');
 
-					$continue = true; // this will be false when geting all extensions of a context ; stoping the next while loop 
+					$continue = true; // this will be false when geting all extensions of a context ; when we finish lopping the context ; stoping the next while loop 
 
 					while ( ($ligne = fgets($file)) && $continue) { 
 
@@ -178,7 +178,6 @@
 
 			}
 
-			//return $extensions;
 
 			return $context;
 
