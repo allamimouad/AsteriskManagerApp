@@ -18,6 +18,9 @@
                     </svg>';
 
 
+
+
+
 ?>
 
 
@@ -36,18 +39,44 @@
 <?php ob_start(); ?>
 
 
-
-<div class="modal fade" id="modifiyClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addextension" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">hello</h5>
+                <h5 class="modal-title" id="exampleModalLabel">client name</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="myform" action="/" method="POST">
+                <form id="myformaddextension" action="/" method="POST">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">extension :</label>
+                        <input name="v_extension" type="text" class="form-control" placeholder="Extension" id="extension" required>
+                        <input type="hidden" id="hiddenid" name="v_id" >
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" form="myformaddextension" value="OK" class="btn btn-info" />
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modifiyClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">client name :</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="myformmodify" action="/" method="POST">
                     <div class="form-group">
                         <label for="recipient-name" class="col-form-label">user name:</label>
                         <input name="v_username" type="text" class="form-control" placeholder="User Name" id="name" required>
@@ -73,7 +102,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <input type="submit" form="myform" value="OK" class="btn btn-info" />
+                <input type="submit" form="myformmodify" value="OK" class="btn btn-info" />
             </div>
         </div>
     </div>
@@ -91,6 +120,21 @@
 
 
 <?php ob_start(); ?>
+
+
+
+<?php if ( isset($dialplan_reloaded) ) { ?>
+        
+
+        <div class="alert <?= ($dialplan_reloaded == 'Dialplan reloaded.') ? "alert-success" : "alert-danger" ?> alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading"><?= $dialplan_reloaded;//($dialplan_reloaded) ? "Context added" : "Contex not added" ; ?></h5>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+
+        <?php } ?>
+
 
 <?php 
     
@@ -118,10 +162,12 @@
                     <div class="col-md-2 justify-content-center align-self-center" id="name<?= $i ?>"> <?= $client->getUsername() ?> </div>
                     <div class="col-md-3 justify-content-center align-self-center" id="password<?= $i ?>"> <?= $client->getPassword() ?> </div>
                     <div class="col-md-2 justify-content-center align-self-center" id="transport<?= $i ?>"> <?= $client->getTransport() ?> </div>
-                    <div class="col-md-2 justify-content-center align-self-center text-success ">
+                    <div class="col-md-2 justify-content-center align-self-center ">
                         <div class="row">
-                            <div class="col-md-4 justify-content-center align-self-center"> 
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-outlign-primary text-success " data-toggle="modal" data-target="#addextension" data-client="<?= $i ?>">
                                     <?= $client->getExtension() == null ? $noextension : $client->getExtension()->getExtension() ?>
+                                </button> 
                             </div>
                             <div class="col-md-4">
                                 <button type="button" class="btn btn-outlign-primary" data-toggle="modal" data-target="#modifiyClient" data-client="<?= $i ?>">

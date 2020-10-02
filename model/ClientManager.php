@@ -194,7 +194,7 @@ class ClientManager extends Manager
 		$contexmanager = new ContextManager();
 
 
-		$context = $contexmanager->get_context(FileManager::get_path_plus_file_name() , $client->getContext());
+		$context = $contexmanager->get_context( $client->getContext() );
 
 		foreach ($context->getClients() as $client ) {
 			
@@ -207,6 +207,41 @@ class ClientManager extends Manager
 		}
 	}
 
+
+	function delete_client_extension($client_id)
+	{
+		$tmp_id = trim($client_id);
+
+		if ($this->client_have_extension($tmp_id)) {
+
+			$contexmanager = new ContextManager();
+
+			$client = $this->get_client($tmp_id);
+
+			$context_name = trim($client->getContext());
+
+
+			$context = $contexmanager->get_context( $context_name );
+
+			foreach ($context->getClients() as $client ) {
+				
+				if ( trim($client->getUsername()) == trim($tmp_id)) {
+					
+					$extension = trim($client->getExtension()->getExtension()) ;
+					break;
+
+				}
+
+			}
+
+			$extensionmanager = new ExtensionManager();
+
+			$extensionmanager->delete_extensions( trim($context_name) , trim($extension) );
+			//exit("context_name".$context_name."extension".$extension);
+
+
+		}
+	}
 
 
 	function modify_client( $_id , $_username , $_password , $_transport ){
@@ -231,7 +266,7 @@ class ClientManager extends Manager
 			$context_name = trim($client->getContext());
 
 
-			$context = $contexmanager->get_context(FileManager::get_path_plus_file_name() , $context_name);
+			$context = $contexmanager->get_context( $context_name);
 
 			foreach ($context->getClients() as $client ) {
 				

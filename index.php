@@ -27,13 +27,17 @@
                 
                 get_create_context_conroller();
             }
+            elseif ($_GET["action"] == "reload_dialplan") {
+                
+                get_reload_dialplan_conroller();
+            }
             else{
-                //echo "string";
+                contexts_list_conroller();
             }
         }
         else{
             
-            require("tester.php");
+            contexts_list_conroller();
         }
         
     }
@@ -47,6 +51,11 @@
         elseif ( isset($_POST["v_id"]) && isset($_POST["v_username"]) && isset($_POST["v_password"]) && isset($_POST["v_Type_de_Protocole"]) ) {
         
             post_modify_client_conroller( $_POST["v_id"] , $_POST["v_username"] , $_POST["v_password"] , $_POST["v_Type_de_Protocole"] );
+        
+        }
+        elseif ( isset($_POST["v_id"]) && isset($_POST["v_extension"]) ) {
+        
+            post_add_extension_conroller( $_POST["v_id"] , $_POST["v_extension"] );
         
         }
         elseif ( isset($_POST["v_context"]) ) {

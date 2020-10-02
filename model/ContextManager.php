@@ -12,11 +12,9 @@
 	/**
 	 * 
 	 */
-	class ContextManager
+	class ContextManager extends FileManager
 	{
 
-
-		static $_path_to_file = "asterisk/extentions.conf";
 		
 		function __construct()
 		{
@@ -24,11 +22,11 @@
 		}
 
 		// will return an array contain all contexts
-		function get_all_contexts_names($path_to_file)
+		function get_all_contexts_names()
 		{
 			$contexts_names = array();
 
-			$file = fopen($path_to_file, 'r');
+			$file = fopen(self::get_path_plus_file_name(), 'r');
 
 			while ($ligne = fgets($file)) {
 				
@@ -50,13 +48,13 @@
 
 		}
 
-		function get_all_contexts($path_to_file)
+		function get_all_contexts()
 		{
-			$contexts_names = $this->get_all_contexts_names($path_to_file);
+			$contexts_names = $this->get_all_contexts_names();
 
 			foreach ($contexts_names as $context_name) {
 				
-				$contexts[] = $this->get_context( $path_to_file , $context_name );
+				$contexts[] = $this->get_context( $context_name );
 
 			}
 
@@ -65,26 +63,26 @@
 		}
 
 		// check a context if exist or not
-		function context_exist($path_to_file  , $context_name ){
+		function context_exist( $context_name ){
 
-			$contexts = $this->get_all_contexts_names($path_to_file);
+			$contexts = $this->get_all_contexts_names();
 
 			return in_array ( $context_name , $contexts );
 		}
 
 		// create a new context
-		function create_context( $path_to_file , $context_name )
+		function create_context( $context_name )
 		{	
 
 			$context_added = false;
 
 			if (preg_match("#^[0-9A-Za-z_-]+$#", $context_name )) { // the context should not exist 
 
-				if ( !$this->context_exist( $path_to_file , $context_name)) {
+				if ( !$this->context_exist( $context_name ) ) {
 									
-					$file = fopen($path_to_file, 'a+');
+					$file = fopen(self::get_path_plus_file_name(), 'a+');
 
-					$context_added = fputs($file, "\r\n\r\n\r\n[".$context_name."]\r\n");
+					$context_added = fputs( $file , "\r\n\r\n\r\n[".$context_name."]\r\n");
 
 					fclose($file);
 				}
@@ -95,7 +93,7 @@
 
 		}
 
-		function get_context( $path_to_file , $context_name ){ 
+		function get_context( $context_name ){ 
 
 			$extensions = array();
 
@@ -105,11 +103,15 @@
 
 			$clientmanager = new ClientManager();
 
+
 			if (preg_match("#^[0-9A-Za-z_-]+$#", $context_name )) { // verify that the variable $context_name is form of [contect]
 
-				if ( $this->context_exist( $path_to_file , $context_name)) { // the context should exist 
+
+			
+
+				if ( $this->context_exist( $context_name ) ) { // the context should exist 
 									
-					$file = fopen($path_to_file, 'r');
+					$file = fopen( self::get_path_plus_file_name() , 'r');
 
 					$continue = true; // this will be false when geting all extensions of a context ; when we finish lopping the context ; stoping the next while loop 
 
@@ -120,7 +122,6 @@
 						if ( "[".$context_name."]" == $ligne_tmp ) {
 							
 							$curent_context = true;
-
 
 
 							while ( ($ligne = fgets($file)) && $curent_context ) {

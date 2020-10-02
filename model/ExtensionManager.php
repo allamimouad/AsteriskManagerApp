@@ -11,7 +11,7 @@
 
 			$contextmanager = new ContextManager();
 			
-			$context = $contextmanager->get_context( self::get_path_plus_file_name() , $context_name );
+			$context = $contextmanager->get_context( $context_name );
 
 			foreach ($context->getExtensions() as $extension_tmp) {
 				

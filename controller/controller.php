@@ -8,7 +8,7 @@
 
 		$contextmanager = new ContextManager();
 
-		$contexts = $contextmanager->get_all_contexts("asterisk/extentions.conf");
+		$contexts = $contextmanager->get_all_contexts();
 
 		$navbar_active = "list contexts";
 
@@ -19,7 +19,7 @@
 		
 		$contextmanager = new ContextManager();
 
-		$contexts = $contextmanager->get_all_contexts_names("asterisk/extentions.conf");
+		$contexts = $contextmanager->get_all_contexts_names();
 
 		$navbar_active = "add client";
 		
@@ -48,7 +48,7 @@
 		
 		$contextmanager = new ContextManager();
 
-		$context_added = $contextmanager->create_context( ContextManager::$_path_to_file , $context_name);
+		$context_added = $contextmanager->create_context( $context_name);
 		
 		$navbar_active = "create context";
 
@@ -64,6 +64,51 @@
 		header("Location: /?action=clients_list");
 		die();
 	}
+
+
+	function post_add_extension_conroller( $_id , $_extension )
+	{
+		$tmp_id = trim($_id);
+		$tmp_extension = trim($_extension);
+
+		$clientmanager = new ClientManager();
+		$extensionmanager = new ExtensionManager();
+
+		$client = $clientmanager->get_client($tmp_id);
+
+		$extensionobj = new Extension(array('extension' => $tmp_extension));
+
+		$tmp_context = trim($client->getContext());
+
+		$clientmanager->delete_client_extension($tmp_id);
+
+		$client->setExtension($extensionobj);
+		$extensionobj->setClient($client);
+
+		$extensionmanager->create_extension( $tmp_context , $extensionobj );
+
+		header("Location: /?action=clients_list");
+		die();
+
+	}
+
+
+	function get_reload_dialplan_conroller()
+	{
+		$dialplan_reloaded = trim(shell_exec ( "asterisk -rx 'dialplan reload'" ));
+
+		//exit($dialplan_reloaded);
+
+		$contextmanager = new ContextManager();
+
+		$contexts = $contextmanager->get_all_contexts();
+
+		$navbar_active = "list contexts";
+
+		require("vue/clients_list.php");
+
+	}
+
 
 	function post_delet_client(){
 
